@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fieldstone Goods — Shop</title>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+
+<header class="site-header">
+  <div class="container site-header__bar">
+    <a href="index.html" class="brand">Fieldstone<em>Goods</em></a>
+
+    <nav class="main-nav" data-main-nav>
+      <a href="index.html" aria-current="page">Shop</a>
+      <a href="index.html#new">New arrivals</a>
+      <a href="index.html#sale">Sale</a>
+      <a href="index.html#about">About</a>
+    </nav>
+
+    <div class="header-actions">
+      <button type="button" class="btn-icon" data-theme-toggle aria-pressed="false" aria-label="Switch to dark theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/><circle cx="12" cy="12" r="4.2"/></svg>
+      </button>
+      <a href="login.html" class="btn-icon" aria-label="Account">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c1.6-3.6 4.6-5.4 7.5-5.4s5.9 1.8 7.5 5.4"/></svg>
+      </a>
+      <a href="{% url 'cart' %}" class="btn-icon cart-link" aria-label="Cart">
+  🛒    <span class="cart-count">{{ cart_items|length }}</span>
+      </a>
+      <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <section class="hero">
+      <div class="hero__copy">
+        <p class="hero__kicker">Autumn restock</p>
+        <h1 class="hero__title">Goods made to <span class="accent">outlast</span> the season</h1>
+        <p class="hero__desc">You can find eveything you need at there</p>
+        <div class="hero__cta">
+          <a href="#product-grid" class="btn btn-primary">Browse the shop</a>
+          <a href="#sale" class="btn btn-outline">See what's on sale</a>
+        </div>
+      </div>
+      <div class="hero__feature">
+        <img src="https://picsum.photos/seed/fieldstone-hero/900/700" alt="Hand-thrown ceramic pitcher on a wooden counter">
+        <div class="hero__feature-card">
+          <div>
+            <p class="product-card__category">Stoneware</p>
+            <h3>Amber Glaze Pitcher</h3>
+          </div>
+          <div>
+            <span class="price-now">$48</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="category-rail" aria-label="Filter by category">
+      <a href="{% url 'home' %}" class="chip" aria-pressed="{% if not active_category %}true{% else %}false{% endif %}">All</a>
+
+      {% for ctg in categories %}
+       <a href="?category={{ ctg.id }}" class="chip" aria-pressed="{% if active_category == ctg.id %}true{% else %}false{% endif %}">{{ ctg.category_name }}</a>
+      {% endfor %}
+    </nav>
+
+    <section id="product-grid">
+      <div class="section-head">
+        <div>
+          <h2>Everyday collection</h2>
+          <p>128 pieces, restocked weekly</p>
+        </div>
+      </div>
+
+      <div class="product-grid">
+
+        {% for product in products %}
+        <article class="product-card">
+          <div class="product-card__media">
+            <img src="{{ product.image.url }}" alt="Walnut cutting board">
+            <button type="button" class="quick-view" data-open-modal="modal-product-1">Quick view</button>
+          </div>
+          <div class="product-card__body">
+            <p class="product-card__category">{{ product.category.category_name }}</p>
+            <h3 class="product-card__name">{{ product.product_name }}</h3>
+            <p class="product-card__desc">{{ product.product_description }}</p>
+            <div class="price-row">
+              <span class="price-now is-sale">${{ product.product_price_new }}</span>
+              <span class="price-old">${{ product.product_price_old }}</span>
+            </div>
+            <form class="add-to-cart-form" method="post" action="{% url 'add_to_cart' %}">
+              {% csrf_token %}
+              <input type="hidden" name="product_id" value="{{ product.id }}">
+              <input type="hidden" name="quantity" value="1">
+              <button type="submit" class="btn btn-primary btn-sm">Add to cart</button>
+            </form>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination as a plain form/link Django can drive with ?page=N -->
+      <form class="pagination-form" method="get" action="#">
+        <button type="submit" name="page" value="2" class="btn btn-outline">Load more products</button>
+      </form>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <span>&copy; 2026 Fieldstone Goods</span>
+    <span>Shipping, returns and care guides in the help center</span>
+  </div>
+</footer>
+
+<div class="modal-backdrop" id="modal-product-1" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-product-1-title">
+    <div class="modal__header">
+      <h2 id="modal-product-1-title">Quick view</h2>
+      <button type="button" class="modal__close" data-close-modal aria-label="Close">&times;</button>
+    </div>
+    <div class="modal__body quick-view-grid">
+      <img src="https://picsum.photos/seed/cutting-board/500/400" alt="Walnut cutting board">
+      <div>
+        <p class="product-card__category">Woodwork</p>
+        <h3>Walnut Edge Board</h3>
+        <p class="product-card__desc" style="-webkit-line-clamp: unset;">Single-slab American walnut, hand-sanded and finished with a food-safe mineral oil and beeswax blend. Each board is cut from a different tree, so the grain pattern is unique to yours.</p>
+        <div class="price-row">
+          <span class="price-now is-sale">$38</span>
+          <span class="price-old">$48</span>
+        </div>
+        <form method="post" action="#" data-autofocus>
+          <!-- {% csrf_token %} -->
+          <input type="hidden" name="product_id" value="101">
+          <div class="qty-select">
+            <label for="qty-modal-1" class="visually-hidden">Quantity</label>
+            <div class="qty-form">
+              <button type="button" data-qty-minus aria-label="Decrease quantity">&minus;</button>
+              <input type="number" id="qty-modal-1" name="quantity" value="1" min="1" max="10">
+              <button type="button" data-qty-plus aria-label="Increase quantity">+</button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Add to cart</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" aria-live="polite" aria-atomic="true">
+  <!-- Server-rendered Django messages land here; see integration note above. -->
+</div>
+
+<script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

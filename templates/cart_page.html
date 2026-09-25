@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your cart — Fieldstone Goods</title>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container site-header__bar">
+    <a href="{% url 'home' %}" class="brand">Fieldstone<em>Goods</em></a>
+
+    <nav class="main-nav" data-main-nav>
+      <a href="{% url 'home' %}">Shop</a>
+      <a href="{% url 'home' %}#new">New arrivals</a>
+      <a href="{% url 'home' %}#sale">Sale</a>
+      <a href="{% url 'home' %}#about">About</a>
+    </nav>
+
+    <div class="header-actions">
+      <button type="button" class="btn-icon" data-theme-toggle aria-label="Switch theme">🌓</button>
+      <a href="login.html" class="btn-icon" aria-label="Account">👤</a>
+      <a href="{% url 'cart' %}" class="btn-icon cart-link" aria-current="page" aria-label="Cart">
+        🛒 <span class="cart-count">{{ cart_items|length }}</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+    <li class="toast toast--{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <div class="section-head" style="margin-top:2rem;">
+    <div>
+      <h2>Your cart</h2>
+      <p>{{ cart_items|length }} item{{ cart_items|length|pluralize }}</p>
+    </div>
+    <a href="{% url 'home' %}" class="btn-text">Continue shopping</a>
+  </div>
+
+  {% if cart_items %}
+  <div class="cart-layout">
+    <div class="cart-list">
+      {% for item in cart_items %}
+      <div class="cart-row">
+        <div class="cart-row__media">
+          <img src="{{ item.product.image.url }}" alt="{{ item.product.product_name }}">
+        </div>
+        <div class="cart-row__info">
+          <h3>{{ item.product.product_name }}</h3>
+          <p>{{ item.product.category.category_name }}</p>
+          <p class="cart-row__price">${{ item.product.products_price_new }}</p>
+        </div>
+
+        <form class="qty-form" method="post" action="{% url 'update_cart_quantity' %}">
+          {% csrf_token %}
+          <input type="hidden" name="product_id" value="{{ item.product.id }}">
+          <button type="submit" name="quantity" value="{{ item.quantity|add:'-1' }}" aria-label="Decrease quantity">&minus;</button>
+          <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="10" aria-label="Quantity">
+          <button type="submit" name="quantity" value="{{ item.quantity|add:'1' }}" aria-label="Increase quantity">+</button>
+        </form>
+
+        <form class="remove-form" method="post" action="{% url 'remove_from_cart' %}">
+          {% csrf_token %}
+          <input type="hidden" name="product_id" value="{{ item.product.id }}">
+          <button type="submit" class="btn-danger-text">Remove</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+
+    <aside class="order-summary">
+      <h2>Order summary</h2>
+      <div class="summary-row"><span>Subtotal</span><span>${{ total }}</span></div>
+      <div class="summary-row total"><span>Total</span><span>${{ total }}</span></div>
+
+      <form method="post" action="#">
+        <button type="submit" class="btn btn-primary btn-block">Proceed to checkout</button>
+      </form>
+    </aside>
+  </div>
+  {% else %}
+  <div class="cart-empty">
+    <h2>Your cart is empty</h2>
+    <p>Items you add will show up here.</p>
+    <a href="{% url 'home' %}" class="btn btn-primary">Browse the shop</a>
+  </div>
+  {% endif %}
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <span>&copy; 2026 Fieldstone Goods</span>
+  </div>
+</footer>
+
+<script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

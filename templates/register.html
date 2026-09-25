@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create account — Fieldstone Goods</title>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+
+<div class="auth-shell">
+  <aside class="auth-aside">
+    <a href="index.html" class="brand">Fieldstone<em>Goods</em></a>
+    <div class="auth-quote">
+      <h2>Join the workshop list.</h2>
+      <p>Create an account for faster checkout, order history, and early access to restocks.</p>
+    </div>
+    <div class="auth-stats">
+      <div><strong>128</strong><span>Products in the shop</span></div>
+      <div><strong>4.8</strong><span>Average review</span></div>
+      <div><strong>40+</strong><span>Independent makers</span></div>
+    </div>
+  </aside>
+
+  <div class="auth-main">
+    <div class="auth-card">
+      <a href="index.html" class="back-home">&larr; Back to shop</a>
+      <h1>Create your account</h1>
+      <p class="auth-sub">It takes less than a minute.</p>
+
+      <form method="post" action="{% url 'auth_user_app:register_user_page' %}">
+        {% csrf_token %}
+
+        <div class="field">
+          <label for="register-name">Full name</label>
+          <input type="text" id="register-name" name="full_name" autocomplete="name" required>
+        </div>
+
+        <div class="field">
+          <label for="register-email">Username</label>
+          <input type="text" id="register-email" name="username" >
+          <!-- <span class="field-error">{{ form.email.errors.0 }}</span> -->
+        </div>
+
+        <div class="field">
+          <label for="register-email">Email</label>
+          <input type="email" id="register-email" name="email" autocomplete="email" required>
+          <!-- <span class="field-error">{{ form.email.errors.0 }}</span> -->
+        </div>
+
+        <div class="field">
+          <label for="register-password">Password</label>
+          <div class="password-field">
+            <input type="password" id="register-password" name="password" autocomplete="new-password" required minlength="8">
+            <button type="button" class="password-toggle" data-password-toggle>Show</button>
+          </div>
+          <span class="hint">At least 8 characters.</span>
+        </div>
+
+        <div class="field">
+          <label for="register-password-confirm">Confirm password</label>
+          <div class="password-field">
+            <input type="password" id="register-password-confirm" name="password" autocomplete="new-password" required minlength="8">
+            <button type="button" class="password-toggle" data-password-toggle>Show</button>
+          </div>
+        </div>
+
+        <div class="field-row" style="justify-content:flex-start;">
+          <label class="checkbox-row">
+            <input type="checkbox" name="accepts_terms" required>
+            I agree to the terms of service and privacy policy
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Create account</button>
+      </form>
+
+      <div class="auth-divider">or</div>
+
+      <p class="auth-footer-note">Already have an account? <a href="{% url 'auth_user_app:login_page' %}" class="btn-text">Sign in</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" aria-live="polite" aria-atomic="true">
+  <!-- Server-rendered Django messages land here. -->
+</div>
+
+<script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

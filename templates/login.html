@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in — Fieldstone Goods</title>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+
+<div class="auth-shell">
+  <aside class="auth-aside">
+    <a href="index.html" class="brand">Fieldstone<em>Goods</em></a>
+    <div class="auth-quote">
+      <h2>Good tools stick around.</h2>
+      <p>Sign in to reorder favorites, track deliveries, and pick up your cart from any device.</p>
+    </div>
+    <div class="auth-stats">
+      <div><strong>128</strong><span>Products in the shop</span></div>
+      <div><strong>4.8</strong><span>Average review</span></div>
+      <div><strong>40+</strong><span>Independent makers</span></div>
+    </div>
+  </aside>
+
+  <div class="auth-main">
+    <div class="auth-card">
+      <a href="index.html" class="back-home">&larr; Back to shop</a>
+      <h1>Welcome back</h1>
+      <p class="auth-sub">Sign in to your account to continue.</p>
+
+      <form method="post" action="{% url 'auth_user_app:login_page' %}">
+      {% csrf_token %}
+
+        <div class="field">
+          <label for="login-username">Username</label>
+          <input type="text" id="login-email" name="username" autocomplete="username" required>
+          <!-- <span class="field-error">{{ form.email.errors.0 }}</span> -->
+        </div>
+
+        <div class="field">
+          <label for="login-password">Password</label>
+          <div class="password-field">
+            <input type="password" id="login-password" name="password" autocomplete="current-password" required>
+            <button type="button" class="password-toggle" data-password-toggle>Show</button>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <a href="#" class="btn-text">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+      </form>
+
+      <div class="auth-divider">or</div>
+
+      <p class="auth-footer-note">New to Fieldstone Goods? <a href="{% url 'auth_user_app:register_user_page' %}" class="btn-text">Create an account</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" aria-live="polite" aria-atomic="true">
+  <!-- Server-rendered Django messages land here. -->
+</div>
+
+<script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
